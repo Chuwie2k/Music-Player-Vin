@@ -87,25 +87,21 @@ const App = () => {
     setMusic(filteredMusic);
   };
 
-  // Calculate summary information
   const summaryData = {
     totalSongs: playlist.length,
     artists: {},
     genres: {},
   };
 
-  // Update summary data based on playlist content
   playlist.forEach((song) => {
     const { artist, genre } = song;
 
-    // Count artists
     if (artist in summaryData.artists) {
       summaryData.artists[artist]++;
     } else {
       summaryData.artists[artist] = 1;
     }
 
-    // Count genres
     if (genre in summaryData.genres) {
       summaryData.genres[genre]++;
     } else {
@@ -118,6 +114,7 @@ const App = () => {
       <nav>
         <div className="logo-container">
           <img src={logoSvg} alt="Music App Logo" className="logo" />
+          <div className="word-logo">Sanctuary Music App</div>
         </div>
         <input
           className="search"
