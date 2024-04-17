@@ -77,7 +77,6 @@ const App = () => {
       const { title, artist, genre } = song;
       const normalizedQuery = searchQuery.trim();
 
-      // Check if song properties contain the normalized search query
       return (
         title.toLowerCase().includes(normalizedQuery) ||
         artist.toLowerCase().includes(normalizedQuery) ||
@@ -88,63 +87,87 @@ const App = () => {
     setMusic(filteredMusic);
   };
 
-  const Logo = () => (
-    <div className="logo-container">
-      <img src={logoSvg} alt="Music App Logo" className="logo" />
-    </div>
-  );
-
-  const SearchBar = () => (
-    <input
-      className="search"
-      type="text"
-      placeholder="Search by title, artist, or genre..."
-      value={query}
-      onChange={handleSearch}
-    />
-  );
-
-  const MusicList = () => (
-    <div>
-      <h2>MUSIC LIST 🎵</h2>
-      <ul className="song-list">
-        {music.map((song) => (
-          <li key={song.id}>
-            <strong>{song.title}</strong> by {song.artist} ({song.genre}){" "}
-            <button onClick={() => addToPlaylist(song)}>+</button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-
-  const Playlist = () => {
-    return (
-      <div>
-        <h2>PLAYLIST 🎧</h2>
-        <ul className="playlist">
-          {playlist.map((song) => (
-            <li key={song.id}>
-              {song.title} by {song.artist}
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
+  // Calculate summary information
+  const summaryData = {
+    totalSongs: playlist.length,
+    artists: {},
+    genres: {},
   };
+
+  // Update summary data based on playlist content
+  playlist.forEach((song) => {
+    const { artist, genre } = song;
+
+    // Count artists
+    if (artist in summaryData.artists) {
+      summaryData.artists[artist]++;
+    } else {
+      summaryData.artists[artist] = 1;
+    }
+
+    // Count genres
+    if (genre in summaryData.genres) {
+      summaryData.genres[genre]++;
+    } else {
+      summaryData.genres[genre] = 1;
+    }
+  });
 
   return (
     <div className="container">
       <nav>
-        <Logo />
-        <SearchBar />
+        <div className="logo-container">
+          <img src={logoSvg} alt="Music App Logo" className="logo" />
+        </div>
+        <input
+          className="search"
+          type="text"
+          placeholder="Search by title, artist, or genre..."
+          value={query}
+          onChange={handleSearch}
+        />
       </nav>
       <div className="row">
         <div className="column">
-          <MusicList />
+          <h2>MUSIC LIST 🎵</h2>
+          <ul className="song-list">
+            {music.map((song) => (
+              <li key={song.id}>
+                <strong>{song.title}</strong> by {song.artist} ({song.genre}){" "}
+                <button onClick={() => addToPlaylist(song)}>+</button>
+              </li>
+            ))}
+          </ul>
         </div>
         <div className="column">
-          <Playlist />
+          <h2>PLAYLIST 🎧</h2>
+          <ul className="playlist">
+            {playlist.map((song) => (
+              <li key={song.id}>
+                {song.title} by {song.artist}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="column">
+          <h2>SUMMARY 📝</h2>
+          <p>Total songs in playlist: {summaryData.totalSongs}</p>
+          <h3>Artists in Playlist:</h3>
+          <ul>
+            {Object.entries(summaryData.artists).map(([artist, count]) => (
+              <li key={artist}>
+                {artist} ({count})
+              </li>
+            ))}
+          </ul>
+          <h3>Genres in Playlist:</h3>
+          <ul>
+            {Object.entries(summaryData.genres).map(([genre, count]) => (
+              <li key={genre}>
+                {genre} ({count})
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
